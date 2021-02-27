@@ -15,7 +15,7 @@ const vidparams = {
 router.get('/add', function(req, res, next) {
   youtube.videos.list(vidparams, (err, results) => {//get trending videos
 
-      results.data.items.forEach( (vid) => {//for each video get channel
+      results.data.items.forEach( (vid, index) => {//for each video get channel
 
         var item = vid.snippet;
         var stat = vid.statistics;
@@ -40,40 +40,37 @@ router.get('/add', function(req, res, next) {
                 'thumbnails': item.thumbnails,
                 'channelTitle' : item.channelTitle,
                 'channelId' : item.channelId,
-                'views': stat.viewCount,
-                'likes': stat.likeCount,
-                'dislikes': stat.dislikeCount,
-                'subs' : chanstat.subscriberCount,
+                'views': stat.viewCount?stat.viewCount:0,
+                'likes': stat.likeCount?stat.likeCount:0,
+                'dislikes': stat.dislikeCount?stat.dislikeCount:0,
+                'subs' : chanstat.subscriberCount?chanstat.subscriberCount:0,
                 'channel_thumb': chan.thumbnails,
                 'channel_description': chan.description
             }
 
-            Video.update({yid:id}, db_data,{upsert: true}, (err, r) => {
-              if(err){
-                console.log(err);
-              }else{
-                console.log('done');
-              }
+            Video.updateMany({yid:id}, db_data,{upsert: true}, (err, r) => {
+                if(results.data.items.length-1 == index){//when all updated
+                  if(err){
+                      res.json({
+                        status: "failed",
+                        error: err
+                      });
+                  }else{
+                    res.json({
+                      status: "success",
+                      updated: results.data.items.length
+                    });
+                  }
+                }
             });
           });
       });
-      if(err){
-          res.json({
-            status: "failed",
-            error: err
-          });
-      }else{
-        res.json({
-          status: "success",
-          updated: results.data.items.length
-        });
-      }
     });
 });
 
 //API TO GET VIDEO
 router.get('/', function(req, res, next) {
-  Video.find({},(err, videos) => {
+  Video.find({}).sort({createdAt: -1}).exec((err, videos) => {
     if(err){
       res.json({
         status: "failed",
@@ -88,5 +85,39 @@ router.get('/', function(req, res, next) {
     }
   });
 });
+
+//API TO GET PARTICULAR VIDEO
+router.get('/:yid', function(req, res, next) {
+  Video.find({yid: req.params.yid},(err, video) => {
+    if(err){
+      res.json({
+        status: "failed",
+        error: err
+      });
+    } else{
+      res.json({
+        status: "success",
+        data: (video.length>0) ? video[0]:null
+      });
+    }
+  });
+});
+
+//API TO DELETE ALL VIDEOS
+router.delete('/', function(req,res,next){
+	Video.deleteMany({}, function(err){
+		if(err){
+			res.json({
+				status: 'failed',
+				error: err
+			});
+		}
+		res.json({
+			status: 'success',
+			result: 'Successfuly Deleted'
+		});
+	});
+});
+
 
 module.exports = router;

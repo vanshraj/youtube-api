@@ -20,17 +20,17 @@ var VideoSchema = mongoose.Schema({
 	},
 	channelTitle : { type : String, required : true },
 	channelId : { type : String, required : true },
-	views : { type : Number, required : true },
-	likes : { type : Number, required : true },
-	dislikes : { type : Number, required : true },
-	subs : { type : Number, required : true },
+	views : { type : Number, required : true, default:0 },
+	likes : { type : Number, required : true, default:0 },
+	dislikes : { type : Number, required : true, default:0 },
+	subs : { type : Number, required : true, default:0 },
 	channel_thumb : {
 		default : { type: UrlSchema },
 		medium : { type: UrlSchema },
 		high : { type: UrlSchema }
 	},
 	channel_description: { type : String, required : true }
-});
+}, { timestamps: true });
 
 var Video = mongoose.model('Video', VideoSchema);
 
