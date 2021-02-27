@@ -5,7 +5,7 @@ const Video = require('../models/Videos.js');
 const youtube = google.youtube('v3');
 
 const vidparams = {
-    key: 'AIzaSyCQWzExqPt9dEeABXjS2jmuHvjt04o_zNM',
+    key: process.env.API_KEY,
     part: 'id, snippet, statistics, player',
     chart:'mostPopular',
     maxResult: 5,
@@ -22,7 +22,7 @@ router.get('/add', function(req, res, next) {
         var player = vid.player;
         var id = vid.id;
         var chanparams = {
-          key: 'AIzaSyCQWzExqPt9dEeABXjS2jmuHvjt04o_zNM',
+          key: process.env.API_KEY,
           part: 'snippet, statistics',
           id: item.channelId,
           maxResult: 1,

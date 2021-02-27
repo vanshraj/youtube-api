@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+require('dotenv').config()
 var index = require('./routes/index');
 var api = require('./routes/api');
 var mongoose = require('mongoose');
@@ -15,8 +15,12 @@ var dbOptions = {
    useCreateIndex: true,
    useFindAndModify: false
  };
- var dbUrl = config.DBHost;
-
+ 
+if(process.env.IS_PROD){
+  var dbUrl = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.3vpif.mongodb.net:27017,cluster0-shard-00-01.3vpif.mongodb.net:27017,cluster0-shard-00-02.3vpif.mongodb.net:27017/${config.DBHost}?ssl=true&replicaSet=atlas-iuym3c-shard-0&authSource=admin&retryWrites=true&w=majority`;
+} else {
+  var dbUrl = `mongodb://localhost:27017/${config.DBHost}`;
+}
 //connect db
 mongoose.connect(dbUrl, dbOptions , function(err, res){
   if(err)
