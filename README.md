@@ -1,5 +1,7 @@
 # youtube-api
 This is a implementation of Youtube Api to manage videos that fetch trending videos from the youtube feed.
+Deployed app can be checked from below link.
+[https://youtube-bluestacks.herokuapp.com/](https://youtube-bluestacks.herokuapp.com/)
 
 ## Prerequisites
 
@@ -11,9 +13,10 @@ First make sure you have following dependencies installed -
 For running this on your machine mongodb should be installed and run along side.
 Also mongodb is implemented for local mongodb://localhost:27017, if you want to use your own db server you can change
 the following env variables 
-DB_USER=<USERNAME>
-DB_PASS=<DBPASSWORD>
-IS_PROD=true
+
+* DB_USER=<USERNAME>
+* DB_PASS=<DBPASSWORD>
+* IS_PROD=true
 
 * For fethcing youtube video you also need to use your own youtube v3 api add place it here
 API_KEY=<YOUTUBE_API>
